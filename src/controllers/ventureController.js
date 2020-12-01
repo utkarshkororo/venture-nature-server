@@ -46,7 +46,7 @@ exports.getImage = asyncHandler(async (req, res, next) => {
 
   const venture = await Venture.findById(req.params.vid).select('+image')
 
-  cache.set(`venture ${venture._id.toString()}`, venture.image)
+  cache.set(`venture ${venture.id.toString()}`, venture.image)
 
   res.set('Content-Type', 'image/png')
   res.send(venture.image)

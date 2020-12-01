@@ -15,7 +15,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
     avatar: req.file && req.file.buffer
   })
 
-  const token = signToken(user._id)
+  const token = signToken(user.id)
 
   res.status(201).json({
     status: 'success',
@@ -37,7 +37,7 @@ exports.login = asyncHandler(async (req, res, next) => {
     throw new CustomError('Incorrect email or password', 401)
   }
 
-  const token = signToken(user._id)
+  const token = signToken(user.id)
 
   res.status(200).json({
     status: 'success',

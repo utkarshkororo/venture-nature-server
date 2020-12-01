@@ -71,7 +71,7 @@ userSchema.methods.correctPassword = async function (candidatePassword) {
 }
 
 userSchema.pre('remove', async function (next) {
-  await this.model('Venture').deleteMany({ creator: this._id })
+  await this.model('Venture').deleteMany({ creator: this.id })
   next()
 })
 
