@@ -42,17 +42,27 @@ const ventureSchema = new mongoose.Schema(
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      versionKey: false,
+      transform: (doc, ret) => {
+        delete ret._id
+        delete ret.image
+      }
+    },
+    toObject: {
+      virtuals: true,
+      versionKey: false,
+      transform: (doc, ret) => {
+        delete ret._id
+        delete ret.image
+      }
+    }
   }
 )
 
 ventureSchema.index({ location: '2dsphere' })
-
-ventureSchema.methods.toJSON = function () {
-  const obj = this.toObject()
-  delete obj.image
-  return obj
-}
 
 //* Geocode & create location field
 ventureSchema.pre('save', async function (next) {

@@ -31,8 +31,24 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true }
+    toJSON: {
+      virtuals: true,
+      versionKey: false,
+      transform: (doc, ret) => {
+        delete ret._id
+        delete ret.password
+        delete ret.avatar
+      }
+    },
+    toObject: {
+      virtuals: true,
+      versionKey: false,
+      transform: (doc, ret) => {
+        delete ret._id
+        delete ret.password
+        delete ret.avatar
+      }
+    }
   }
 )
 
@@ -41,13 +57,6 @@ userSchema.virtual('ventures', {
   localField: '_id',
   foreignField: 'creator'
 })
-
-userSchema.methods.toJSON = function () {
-  const obj = this.toObject()
-  delete obj.password
-  delete obj.avatar
-  return obj
-}
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next()
