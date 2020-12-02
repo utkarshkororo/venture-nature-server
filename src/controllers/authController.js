@@ -28,13 +28,13 @@ exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body
 
   if (!email || !password) {
-    throw new CustomError('Please provide email and password', 400)
+    return next(new CustomError('Please provide email and password', 400))
   }
 
   const user = await User.findOne({ email }).select('+password')
 
   if (!user || !(await user.correctPassword(password))) {
-    throw new CustomError('Incorrect email or password', 401)
+    return next(new CustomError('Incorrect email or password', 401))
   }
 
   const token = signToken(user.id)
@@ -51,7 +51,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     req.headers.authorization &&
     req.headers.authorization.replace('Bearer ', '')
 
-  if (!token) throw new CustomError('Authentication failed!', 401)
+  if (!token) return next(new CustomError('Authentication failed!', 401))
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
