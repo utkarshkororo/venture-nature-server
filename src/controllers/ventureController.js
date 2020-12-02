@@ -49,7 +49,7 @@ exports.getImage = asyncHandler(async (req, res, next) => {
   if (!venture)
     return next(new CustomError('No venture found with that ID!', 404))
 
-  cache.set(`venture ${venture.id.toString()}`, venture.image)
+  cache.set(`venture ${venture.id}`, venture.image)
 
   res.set('Content-Type', 'image/png')
   res.send(venture.image)
@@ -99,7 +99,7 @@ exports.deleteVenture = asyncHandler(async (req, res, next) => {
   if (!venture)
     return next(new CustomError('No venture found with that ID!', 404))
 
-  if (venture.creator.toString() !== req.userData.userId.toString())
+  if (venture.creator.toString() !== req.userData.userId)
     return next(
       new CustomError('You are not authorized to delete this venture!', 401)
     )
@@ -127,7 +127,7 @@ exports.updateVenture = asyncHandler(async (req, res, next) => {
 
   if (!isValidOperation) return next(new CustomError('Invalid updates!', 400))
 
-  if (venture.creator.toString() !== req.userData.userId.toString())
+  if (venture.creator.toString() !== req.userData.userId)
     return next(
       new CustomError('You are not authorized to update this venture!', 401)
     )
