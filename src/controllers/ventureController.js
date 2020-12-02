@@ -46,6 +46,8 @@ exports.getImage = asyncHandler(async (req, res, next) => {
 
   const venture = await Venture.findById(req.params.vid).select('+image')
 
+  if (!venture) throw new CustomError('No venture found with that ID!', 404)
+
   cache.set(`venture ${venture.id.toString()}`, venture.image)
 
   res.set('Content-Type', 'image/png')

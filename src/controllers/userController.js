@@ -46,6 +46,8 @@ exports.getAvatar = asyncHandler(async (req, res, next) => {
 
   const user = await User.findById(req.params.uid).select('+avatar')
 
+  if (!user) throw new CustomError('No user found with that ID!', 404)
+
   cache.set(`user ${user.id.toString()}`, user.avatar)
 
   res.set('Content-Type', 'image/png')
