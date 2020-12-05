@@ -55,7 +55,7 @@ exports.getAvatar = asyncHandler(async (req, res, next) => {
 })
 
 exports.getAllUsers = asyncHandler(async (req, res, next) => {
-  const users = await User.find({})
+  const users = await User.find({}).populate('ventures')
 
   res.status(200).json({
     status: 'success',
