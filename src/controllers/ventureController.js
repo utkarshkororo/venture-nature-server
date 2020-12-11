@@ -1,6 +1,7 @@
 const multer = require('multer')
 const sharp = require('sharp')
 const NodeCache = require('node-cache')
+const User = require('../models/userModel')
 const Venture = require('../models/ventureModel')
 const asyncHandler = require('../middleware/asyncHandler')
 const CustomError = require('../utils/CustomError')
@@ -70,7 +71,14 @@ exports.createVenture = asyncHandler(async (req, res, next) => {
 
 exports.getAllVentures = asyncHandler(async (req, res, next) => {
   let filter = {}
-  if (req.params.uid) filter = { creator: req.params.uid }
+
+  if (req.params.uid) {
+    const user = await User.findById(req.params.uid)
+
+    if (!user) return next(new CustomError('No user found with that ID!', 404))
+
+    filter = { creator: req.params.uid }
+  }
 
   const ventures = await Venture.find(filter)
 
