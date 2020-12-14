@@ -20,6 +20,7 @@ const ventureSchema = new mongoose.Schema(
       //? GeoJSON Point
       type: {
         type: String,
+        default: 'Point',
         enum: ['Point']
       },
       coordinates: [Number],
