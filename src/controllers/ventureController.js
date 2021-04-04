@@ -47,8 +47,9 @@ exports.getImage = asyncHandler(async (req, res, next) => {
 
   const venture = await Venture.findById(req.params.vid).select('+image')
 
-  if (!venture)
+  if (!venture) {
     return next(new CustomError('No venture found with that ID!', 404))
+  }
 
   cache.set(`venture ${venture.id}`, venture.image)
 
@@ -92,8 +93,9 @@ exports.getAllVentures = asyncHandler(async (req, res, next) => {
 exports.getVenture = asyncHandler(async (req, res, next) => {
   const venture = await Venture.findById(req.params.id)
 
-  if (!venture)
+  if (!venture) {
     return next(new CustomError('No venture found with that ID!', 404))
+  }
 
   res.status(200).json({
     status: 'success',
@@ -104,13 +106,15 @@ exports.getVenture = asyncHandler(async (req, res, next) => {
 exports.deleteVenture = asyncHandler(async (req, res, next) => {
   const venture = await Venture.findById(req.params.id)
 
-  if (!venture)
+  if (!venture) {
     return next(new CustomError('No venture found with that ID!', 404))
+  }
 
-  if (venture.creator.toString() !== req.userData.userId)
+  if (venture.creator.toString() !== req.userData.userId) {
     return next(
       new CustomError('You are not authorized to delete this venture!', 401)
     )
+  }
 
   await venture.remove()
 
@@ -126,8 +130,9 @@ exports.updateVenture = asyncHandler(async (req, res, next) => {
 
   const venture = await Venture.findById(req.params.id)
 
-  if (!venture)
+  if (!venture) {
     return next(new CustomError('No venture found with that ID!', 404))
+  }
 
   const isValidOperation = updates.every((update) =>
     allowedUpdates.includes(update)
@@ -135,10 +140,11 @@ exports.updateVenture = asyncHandler(async (req, res, next) => {
 
   if (!isValidOperation) return next(new CustomError('Invalid updates!', 400))
 
-  if (venture.creator.toString() !== req.userData.userId)
+  if (venture.creator.toString() !== req.userData.userId) {
     return next(
       new CustomError('You are not authorized to update this venture!', 401)
     )
+  }
 
   updates.forEach((update) => (venture[update] = req.body[update]))
 

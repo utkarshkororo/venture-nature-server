@@ -9,12 +9,14 @@ const errorHandler = (err, req, res, next) => {
   error.status = error.status || 'error'
 
   //* Mongoose bad ObjectId
-  if (err.name === 'CastError')
+  if (err.name === 'CastError') {
     error = new CustomError(`Resource not found`, 404)
+  }
 
   //* Mongoose duplicate key
-  if (err.code === 11000)
+  if (err.code === 11000) {
     error = new CustomError(`Duplicate field value entered`, 400)
+  }
 
   //* Mongoose validation error
   if (err.name === 'ValidationError') {
