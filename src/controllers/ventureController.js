@@ -118,7 +118,7 @@ exports.deleteVenture = asyncHandler(async (req, res, next) => {
 
   await venture.remove()
 
-  res.status(204).json({
+  res.status(200).json({
     status: 'success',
     data: null
   })
