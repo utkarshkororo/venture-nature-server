@@ -45,7 +45,6 @@ const ventureSchema = new mongoose.Schema(
   {
     timestamps: true,
     toJSON: {
-      virtuals: true,
       versionKey: false,
       transform: (doc, ret) => {
         delete ret._id
@@ -53,7 +52,6 @@ const ventureSchema = new mongoose.Schema(
       }
     },
     toObject: {
-      virtuals: true,
       versionKey: false,
       transform: (doc, ret) => {
         delete ret._id
