@@ -1,3 +1,4 @@
+const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
 const User = require('../models/userModel')
 const asyncHandler = require('../middleware/asyncHandler')
@@ -53,7 +54,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   if (!token) return next(new CustomError('Authentication failed!', 401))
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
 
   req.userData = { userId: decoded.id }
   next()
