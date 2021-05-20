@@ -8,9 +8,8 @@ process.on('uncaughtException', (err) => {
 
 const app = require('./app')
 
-const port = process.env.PORT
-const server = app.listen(port, () => {
-  console.log(`Server running on port ${port}...`)
+const server = app.listen(app.get('port'), () => {
+  console.log(`Server running on port ${app.get('port')}...`)
 })
 
 process.on('unhandledRejection', (err) => {

@@ -50,6 +50,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 exports.protect = asyncHandler(async (req, res, next) => {
   const token =
     req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer') &&
     req.headers.authorization.replace('Bearer ', '')
 
   if (!token) return next(new CustomError('Authentication failed!', 401))

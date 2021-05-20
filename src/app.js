@@ -13,6 +13,8 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
 
+app.set('port', process.env.PORT)
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
