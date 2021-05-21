@@ -17,7 +17,7 @@ const ventureSchema = new mongoose.Schema(
       required: true
     },
     location: {
-      //? GeoJSON Point
+      // GeoJSON Point
       type: {
         type: String,
         default: 'Point',
@@ -65,7 +65,7 @@ const ventureSchema = new mongoose.Schema(
 
 ventureSchema.index({ location: '2dsphere' })
 
-//* Geocode & create location field
+// Geocode & create location field
 ventureSchema.pre('save', async function (next) {
   if (!this.isModified('address')) return next()
 

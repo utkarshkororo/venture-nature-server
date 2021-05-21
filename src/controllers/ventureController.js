@@ -1,18 +1,16 @@
 const multer = require('multer')
 const sharp = require('sharp')
-const NodeCache = require('node-cache')
 const User = require('../models/userModel')
 const Venture = require('../models/ventureModel')
 const asyncHandler = require('../middleware/asyncHandler')
-const CustomError = require('../utils/CustomError')
-
-const cache = new NodeCache({ stdTTL: 3600, useClones: false })
+const AppError = require('../utils/AppError')
+const cache = require('../utils/cache')
 
 const multerStorage = multer.memoryStorage()
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) cb(null, true)
-  else cb(new CustomError('Not an image!', 400), false)
+  else cb(new AppError('Not an image!', 400), false)
 }
 
 const upload = multer({
@@ -37,7 +35,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 })
 
 exports.getImage = asyncHandler(async (req, res, next) => {
-  const imgBuffer = cache.get(`venture ${req.params.vid}`)
+  const imgBuffer = cache.get(`venture ${req.params.id}`)
 
   if (imgBuffer) {
     res.set('Content-Type', 'image/png')
@@ -45,10 +43,10 @@ exports.getImage = asyncHandler(async (req, res, next) => {
     return
   }
 
-  const venture = await Venture.findById(req.params.vid).select('+image')
+  const venture = await Venture.findById(req.params.id).select('+image')
 
   if (!venture) {
-    return next(new CustomError('No venture found with that ID!', 404))
+    return next(new AppError('No venture found with that ID!', 404))
   }
 
   cache.set(`venture ${venture.id}`, venture.image)
@@ -61,7 +59,7 @@ exports.createVenture = asyncHandler(async (req, res, next) => {
   const venture = await Venture.create({
     ...req.body,
     creator: req.userData.userId,
-    image: req.file && req.file.buffer
+    image: req.file?.buffer
   })
 
   res.status(201).json({
@@ -76,7 +74,7 @@ exports.getAllVentures = asyncHandler(async (req, res, next) => {
   if (req.params.uid) {
     const user = await User.findById(req.params.uid)
 
-    if (!user) return next(new CustomError('No user found with that ID!', 404))
+    if (!user) return next(new AppError('No user found with that ID!', 404))
 
     filter = { creator: req.params.uid }
   }
@@ -94,7 +92,7 @@ exports.getVenture = asyncHandler(async (req, res, next) => {
   const venture = await Venture.findById(req.params.id)
 
   if (!venture) {
-    return next(new CustomError('No venture found with that ID!', 404))
+    return next(new AppError('No venture found with that ID!', 404))
   }
 
   res.status(200).json({
@@ -107,12 +105,12 @@ exports.deleteVenture = asyncHandler(async (req, res, next) => {
   const venture = await Venture.findById(req.params.id)
 
   if (!venture) {
-    return next(new CustomError('No venture found with that ID!', 404))
+    return next(new AppError('No venture found with that ID!', 404))
   }
 
   if (venture.creator.toString() !== req.userData.userId) {
     return next(
-      new CustomError('You are not authorized to delete this venture!', 401)
+      new AppError('You are not authorized to delete this venture!', 401)
     )
   }
 
@@ -131,18 +129,18 @@ exports.updateVenture = asyncHandler(async (req, res, next) => {
   const venture = await Venture.findById(req.params.id)
 
   if (!venture) {
-    return next(new CustomError('No venture found with that ID!', 404))
+    return next(new AppError('No venture found with that ID!', 404))
   }
 
   const isValidOperation = updates.every((update) =>
     allowedUpdates.includes(update)
   )
 
-  if (!isValidOperation) return next(new CustomError('Invalid updates!', 400))
+  if (!isValidOperation) return next(new AppError('Invalid updates!', 400))
 
   if (venture.creator.toString() !== req.userData.userId) {
     return next(
-      new CustomError('You are not authorized to update this venture!', 401)
+      new AppError('You are not authorized to update this venture!', 401)
     )
   }
 

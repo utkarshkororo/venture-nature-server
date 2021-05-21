@@ -13,7 +13,7 @@ const {
 
 const router = express.Router({ mergeParams: true })
 
-router.get('/:vid/image', getImage)
+router.get('/:id/image', getImage)
 
 router
   .route('/')

@@ -1,10 +1,10 @@
 const express = require('express')
 const morgan = require('morgan')
 
-require('./mongoose')
+require('./connect')
 const userRouter = require('./routes/userRoutes')
 const ventureRouter = require('./routes/ventureRoutes')
-const CustomError = require('./utils/CustomError')
+const AppError = require('./utils/AppError')
 const errorHandler = require('./middleware/errorHandler')
 
 const app = express()
@@ -33,7 +33,7 @@ app.use('/users', userRouter)
 app.use('/ventures', ventureRouter)
 
 app.all('*', (req, res, next) => {
-  next(new CustomError(`Can't find ${req.originalUrl} on this server!`, 404))
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404))
 })
 
 app.use(errorHandler)

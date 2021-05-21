@@ -1,17 +1,15 @@
 const multer = require('multer')
 const sharp = require('sharp')
-const NodeCache = require('node-cache')
-const asyncHandler = require('../middleware/asyncHandler')
 const User = require('../models/userModel')
-const CustomError = require('../utils/CustomError')
-
-const cache = new NodeCache({ stdTTL: 3600, useClones: false })
+const asyncHandler = require('../middleware/asyncHandler')
+const AppError = require('../utils/AppError')
+const cache = require('../utils/cache')
 
 const multerStorage = multer.memoryStorage()
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) cb(null, true)
-  else cb(new CustomError('Not an image!', 400), false)
+  else cb(new AppError('Not an image!', 400), false)
 }
 
 const upload = multer({
@@ -36,7 +34,7 @@ exports.resizeAvatar = asyncHandler(async (req, res, next) => {
 })
 
 exports.getAvatar = asyncHandler(async (req, res, next) => {
-  const imgBuffer = cache.get(`user ${req.params.uid}`)
+  const imgBuffer = cache.get(`user ${req.params.id}`)
 
   if (imgBuffer) {
     res.set('Content-Type', 'image/png')
@@ -44,9 +42,9 @@ exports.getAvatar = asyncHandler(async (req, res, next) => {
     return
   }
 
-  const user = await User.findById(req.params.uid).select('+avatar')
+  const user = await User.findById(req.params.id).select('+avatar')
 
-  if (!user) return next(new CustomError('No user found with that ID!', 404))
+  if (!user) return next(new AppError('No user found with that ID!', 404))
 
   cache.set(`user ${user.id}`, user.avatar)
 

@@ -11,7 +11,8 @@ const ventureRouter = require('./ventureRoutes')
 const router = express.Router()
 
 router.use('/:uid/ventures', ventureRouter)
-router.get('/:uid/avatar', getAvatar)
+
+router.get('/:id/avatar', getAvatar)
 
 router.post('/signup', initiateUpload, resizeAvatar, signup)
 router.post('/login', login)

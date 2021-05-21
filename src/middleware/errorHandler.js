@@ -1,4 +1,4 @@
-const CustomError = require('../utils/CustomError')
+const AppError = require('../utils/AppError')
 
 const errorHandler = (err, req, res, next) => {
   let error = { ...err }
@@ -8,20 +8,20 @@ const errorHandler = (err, req, res, next) => {
   error.statusCode = error.statusCode || 500
   error.status = error.status || 'error'
 
-  //* Mongoose bad ObjectId
+  // Mongoose Bad ObjectId
   if (err.name === 'CastError') {
-    error = new CustomError(`Resource not found`, 404)
+    error = new AppError(`Resource not found`, 404)
   }
 
-  //* Mongoose duplicate key
+  // Mongoose Duplicate key
   if (err.code === 11000) {
-    error = new CustomError(`Duplicate field value entered`, 400)
+    error = new AppError(`Duplicate field value entered`, 400)
   }
 
-  //* Mongoose validation error
+  // Mongoose Validation error
   if (err.name === 'ValidationError') {
     const message = Object.values(err.errors).map((val) => val.message)
-    error = new CustomError(message, 400)
+    error = new AppError(message, 400)
   }
 
   res.status(error.statusCode).json({
