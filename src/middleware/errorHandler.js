@@ -1,6 +1,6 @@
 const AppError = require('../utils/AppError')
 
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, _req, res, _next) => {
   let error = { ...err }
 
   error.message = err.message
@@ -20,7 +20,7 @@ const errorHandler = (err, req, res, next) => {
 
   // Mongoose Validation error
   if (err.name === 'ValidationError') {
-    const message = Object.values(err.errors).map((val) => val.message)
+    const message = Object.values(err.errors).map(({ message }) => message)
     error = new AppError(message, 400)
   }
 
