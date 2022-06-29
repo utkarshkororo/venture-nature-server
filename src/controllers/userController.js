@@ -7,7 +7,7 @@ const cache = require('../services/cache')
 
 const multerStorage = multer.memoryStorage()
 
-const multerFilter = (req, file, cb) => {
+const multerFilter = (_req, file, cb) => {
   if (file.mimetype.startsWith('image')) cb(null, true)
   else cb(new AppError('Not an image!', 400), false)
 }
@@ -22,7 +22,7 @@ const upload = multer({
 
 exports.initiateUpload = upload.single('avatar')
 
-exports.resizeAvatar = asyncHandler(async (req, res, next) => {
+exports.resizeAvatar = asyncHandler(async (req, _res, next) => {
   if (!req.file) return next()
 
   req.file.buffer = await sharp(req.file.buffer)
@@ -38,8 +38,7 @@ exports.getAvatar = asyncHandler(async (req, res, next) => {
 
   if (imgBuffer) {
     res.set('Content-Type', 'image/png')
-    res.send(imgBuffer)
-    return
+    return res.send(imgBuffer)
   }
 
   const user = await User.findById(req.params.id).select('+avatar')
@@ -52,7 +51,7 @@ exports.getAvatar = asyncHandler(async (req, res, next) => {
   res.send(user.avatar)
 })
 
-exports.getAllUsers = asyncHandler(async (req, res, next) => {
+exports.getAllUsers = asyncHandler(async (_req, res, _next) => {
   const users = await User.find({}).populate('ventures')
 
   res.status(200).json({

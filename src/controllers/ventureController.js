@@ -8,7 +8,7 @@ const cache = require('../services/cache')
 
 const multerStorage = multer.memoryStorage()
 
-const multerFilter = (req, file, cb) => {
+const multerFilter = (_req, file, cb) => {
   if (file.mimetype.startsWith('image')) cb(null, true)
   else cb(new AppError('Not an image!', 400), false)
 }
@@ -23,7 +23,7 @@ const upload = multer({
 
 exports.initiateUpload = upload.single('image')
 
-exports.resizeImage = asyncHandler(async (req, res, next) => {
+exports.resizeImage = asyncHandler(async (req, _res, next) => {
   if (!req.file) return next()
 
   req.file.buffer = await sharp(req.file.buffer)
@@ -39,8 +39,7 @@ exports.getImage = asyncHandler(async (req, res, next) => {
 
   if (imgBuffer) {
     res.set('Content-Type', 'image/png')
-    res.send(imgBuffer)
-    return
+    return res.send(imgBuffer)
   }
 
   const venture = await Venture.findById(req.params.id).select('+image')
@@ -55,7 +54,7 @@ exports.getImage = asyncHandler(async (req, res, next) => {
   res.send(venture.image)
 })
 
-exports.createVenture = asyncHandler(async (req, res, next) => {
+exports.createVenture = asyncHandler(async (req, res, _next) => {
   const venture = await Venture.create({
     ...req.body,
     creator: req.userData.userId,
