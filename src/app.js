@@ -1,7 +1,6 @@
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
-
 require('./services/db')
 const userRouter = require('./routes/userRoutes')
 const ventureRouter = require('./routes/ventureRoutes')

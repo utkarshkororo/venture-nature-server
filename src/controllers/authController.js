@@ -1,4 +1,3 @@
-const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
 const User = require('../models/userModel')
 const asyncHandler = require('../middleware/asyncHandler')
@@ -10,7 +9,7 @@ const signToken = (id) => {
   })
 }
 
-exports.signup = asyncHandler(async (req, res, next) => {
+exports.signup = asyncHandler(async (req, res, _next) => {
   const user = await User.create({
     ...req.body,
     avatar: req.file?.buffer
@@ -47,16 +46,16 @@ exports.login = asyncHandler(async (req, res, next) => {
   })
 })
 
-exports.protect = asyncHandler(async (req, res, next) => {
+exports.protect = asyncHandler(async (req, _res, next) => {
   const token =
     req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer') &&
+    req.headers.authorization.startsWith('Bearer ') &&
     req.headers.authorization.replace('Bearer ', '')
 
   if (!token) return next(new AppError('Authentication failed!', 401))
 
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+  const { id } = jwt.verify(token, process.env.JWT_SECRET)
 
-  req.userData = { userId: decoded.id }
+  req.userData = { userId: id }
   next()
 })
