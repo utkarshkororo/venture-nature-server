@@ -10,11 +10,13 @@ const ventureSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true
+      required: true,
+      trim: true
     },
     address: {
       type: String,
-      required: true
+      required: true,
+      trim: true
     },
     location: {
       // GeoJSON Point
@@ -47,7 +49,7 @@ const ventureSchema = new mongoose.Schema(
     toJSON: {
       virtuals: true,
       versionKey: false,
-      transform: (doc, ret) => {
+      transform: (_doc, ret) => {
         delete ret._id
         delete ret.image
       }
@@ -55,7 +57,7 @@ const ventureSchema = new mongoose.Schema(
     toObject: {
       virtuals: true,
       versionKey: false,
-      transform: (doc, ret) => {
+      transform: (_doc, ret) => {
         delete ret._id
         delete ret.image
       }

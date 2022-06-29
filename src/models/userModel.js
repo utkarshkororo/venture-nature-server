@@ -1,13 +1,13 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
+const { isEmail } = require('validator')
 const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      trim: true,
-      required: true
+      required: true,
+      trim: true
     },
     email: {
       type: String,
@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       lowercase: true,
-      validate: validator.isEmail
+      validate: isEmail
     },
     password: {
       type: String,
@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
     toJSON: {
       virtuals: true,
       versionKey: false,
-      transform: (doc, ret) => {
+      transform: (_doc, ret) => {
         delete ret._id
         delete ret.password
         delete ret.avatar
@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema(
     toObject: {
       virtuals: true,
       versionKey: false,
-      transform: (doc, ret) => {
+      transform: (_doc, ret) => {
         delete ret._id
         delete ret.password
         delete ret.avatar
@@ -67,7 +67,7 @@ userSchema.pre('save', async function (next) {
 })
 
 userSchema.methods.correctPassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password)
+  return bcrypt.compare(candidatePassword, this.password)
 }
 
 userSchema.pre('remove', async function (next) {
