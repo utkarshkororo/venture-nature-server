@@ -4,7 +4,7 @@ const User = require('../models/userModel')
 const Venture = require('../models/ventureModel')
 const asyncHandler = require('../middleware/asyncHandler')
 const AppError = require('../utils/AppError')
-const cache = require('../utils/cache')
+const cache = require('../services/cache')
 
 const multerStorage = multer.memoryStorage()
 

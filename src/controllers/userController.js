@@ -3,7 +3,7 @@ const sharp = require('sharp')
 const User = require('../models/userModel')
 const asyncHandler = require('../middleware/asyncHandler')
 const AppError = require('../utils/AppError')
-const cache = require('../utils/cache')
+const cache = require('../services/cache')
 
 const multerStorage = multer.memoryStorage()
 

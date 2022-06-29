@@ -1,7 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 
-require('./connect')
+require('./services/db')
 const userRouter = require('./routes/userRoutes')
 const ventureRouter = require('./routes/ventureRoutes')
 const AppError = require('./utils/AppError')
@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use((req, res, next) => {
+app.use((_req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader(
     'Access-Control-Allow-Headers',
