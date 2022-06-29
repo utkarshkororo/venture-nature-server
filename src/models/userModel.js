@@ -55,7 +55,8 @@ const userSchema = new mongoose.Schema(
 userSchema.virtual('ventures', {
   ref: 'Venture',
   localField: '_id',
-  foreignField: 'creator'
+  foreignField: 'creator',
+  count: true
 })
 
 userSchema.pre('save', async function (next) {
