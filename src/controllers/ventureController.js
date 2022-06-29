@@ -62,7 +62,6 @@ exports.createVenture = asyncHandler(async (req, res, _next) => {
   })
 
   res.status(201).json({
-    status: 'success',
     data: venture
   })
 })
@@ -81,8 +80,6 @@ exports.getAllVentures = asyncHandler(async (req, res, next) => {
   const ventures = await Venture.find(filter)
 
   res.status(200).json({
-    status: 'success',
-    results: ventures.length,
     data: ventures
   })
 })
@@ -95,7 +92,6 @@ exports.getVenture = asyncHandler(async (req, res, next) => {
   }
 
   res.status(200).json({
-    status: 'success',
     data: venture
   })
 })
@@ -116,8 +112,7 @@ exports.deleteVenture = asyncHandler(async (req, res, next) => {
   await venture.remove()
 
   res.status(200).json({
-    status: 'success',
-    data: null
+    data: venture
   })
 })
 
@@ -148,7 +143,6 @@ exports.updateVenture = asyncHandler(async (req, res, next) => {
   await venture.save()
 
   res.status(200).json({
-    status: 'success',
     data: venture
   })
 })

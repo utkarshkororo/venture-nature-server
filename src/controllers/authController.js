@@ -18,7 +18,6 @@ exports.signup = asyncHandler(async (req, res, _next) => {
   const token = signToken(user.id)
 
   res.status(201).json({
-    status: 'success',
     token,
     data: user
   })
@@ -40,7 +39,6 @@ exports.login = asyncHandler(async (req, res, next) => {
   const token = signToken(user.id)
 
   res.status(200).json({
-    status: 'success',
     token,
     data: user
   })

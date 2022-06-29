@@ -55,8 +55,6 @@ exports.getAllUsers = asyncHandler(async (_req, res, _next) => {
   const users = await User.find({}).populate('ventures')
 
   res.status(200).json({
-    status: 'success',
-    results: users.length,
     data: users
   })
 })
