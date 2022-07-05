@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const geocoder = require('../services/geocoder')
+const { geocode } = require('../services/geocoder')
 
 const ventureSchema = new mongoose.Schema(
   {
@@ -71,17 +71,26 @@ ventureSchema.index({ location: '2dsphere' })
 ventureSchema.pre('save', async function (next) {
   if (!this.isModified('address')) return next()
 
-  const loc = await geocoder.geocode(this.address)
+  const {
+    lat,
+    lng,
+    country,
+    state,
+    city,
+    street,
+    zipcode,
+    address: formattedAddress
+  } = await geocode(this.address)
 
   this.location = {
     type: 'Point',
-    coordinates: [loc[0].longitude, loc[0].latitude],
-    formattedAddress: loc[0].formattedAddress,
-    street: loc[0].streetName,
-    city: loc[0].city,
-    state: loc[0].stateCode,
-    zipcode: loc[0].zipcode,
-    country: loc[0].countryCode
+    coordinates: [lng, lat],
+    formattedAddress,
+    street,
+    city,
+    state,
+    zipcode,
+    country
   }
 
   next()
