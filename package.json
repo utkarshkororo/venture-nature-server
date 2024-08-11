@@ -23,7 +23,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "node-cache": "^5.1.2",
-    "sharp": "^0.26.3",
+    "sharp": "^0.32.6",
     "validator": "^13.1.17"
   },
   "engines": {
